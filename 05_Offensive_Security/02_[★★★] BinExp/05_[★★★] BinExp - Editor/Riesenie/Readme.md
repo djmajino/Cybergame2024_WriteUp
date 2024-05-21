@@ -17,7 +17,7 @@ Prvá zraniteľnosť bola v debug_msg() funkcii, kde nebol zadaný format specif
 ![002](002_pointer.png)
 
 
-Pre nás zaujímavý ďalší pointer bol "\%8\$p", ktorý nás nasmeroval na adresu v heape s offsetom +0x720 (heap base je teda pointer - 0x720). Adresy sme si printli pomocou príkazu "get debug.log" alebo počas debugovanie aj pomocou terminálu a príkazu "cat debug.log".
+Pre nás zaujímavý ďalší pointer bol "\%8\$p", ktorý nás nasmeroval na adresu v heape vždy s offsetom +0x720 (heap base je teda pointer - 0x720). Adresy sme si printli pomocou príkazu "get debug.log" alebo počas debugovania aj pomocou terminálu a príkazu "cat debug.log".
 
 └─$ nc 127.0.0.1 2222  
 Enter commands (type 'exit' to quit):  
@@ -41,11 +41,11 @@ Success
 
 Po viacerých spusteniach som zistil, že offset od heap base pre uloženú vlajku číslo 4, je vždy _+0x1710_
 
-Ďalší postreh bol, že funkcia get si alokuje v heape 48 bajtov pre zápis názvu súboru, ktorý číta, ale na adresu+40 (bajty 41-48) zapíše adresu, na ktorú funckia strncat zapíše obsah súboru. Názov súboru ale mohol byť dlhý až 70 bajtov (69 + null terminator, takže len 69). Funkcia put nám umožní zapísať do súboru 20 bajtov.
+Ďalší postreh bol, že funkcia get si alokuje v heape 48 bajtov pre zápis názvu súboru, ktorý číta, ale na adresu kde to zapisuje +0x28 (bajty 41-48) zapíše adresu, na ktorú funckia strncat zapíše obsah súboru. Názov súboru ale mohol byť dlhý až 70 bajtov (69 + null terminator, takže len 69). Funkcia put nám umožní zapísať do súboru 20 bajtov.
 
 Exploit teda spočíval v tom, že blízko adresy v stacku, ktorú sme printli z debug.log zapíšeme adresu z heapu, kde sa nám načítal súbor z vlajkou...  
 
-Pomocou put 40x"A" + adresa_stacku-0x20_napr vytvoríme súbor,
+Pomocou """put 40x"A" + (adresa_stacku-0x20_napr)"""  vytvoríme súbor,
 keď klient vypýta   
 text\> zadáme adresu heapu, kde máme vlajku + jeden bajt (heap base + 0x1711)
 pomocou get 40xA + adresa_stacku-0x20 prepíšeme adresu, kam sa zapíše obsah súboru (musí existovať ten súbor, preto ten put najskôr) a do toho stacku tak zapíšeme pointer, kde je obsah vlajky bez prvého znaku
