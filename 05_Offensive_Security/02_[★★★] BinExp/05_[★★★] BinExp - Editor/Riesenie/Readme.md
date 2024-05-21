@@ -12,7 +12,7 @@ Z tohto nám vyplýva, že možnosti je málo. Treba sa zamerať na niečo konk�
 Po dôkladnej statickej analýze som prišiel na to, že aplikácia odomňa pýta príkazy. Pokiaľ som neprihlásený, jediné príkazy, ktoré vezme sú login a exit. exit ukončí aplikáciu, login umožní prihlásiť sa menom a heslom guest:guest
 Po prihlásení je možné zadať ďalšie príkazy a to get a put, pričom za nimi očakáva argument s názvom súboru.
 
-Prvá zraniteľnosť bola v debug_msg() funkcii, kde nebol zadaný format specifier, čo nám umožní leaknuť pointre a rovnako stringy na pointeroch. Tu som použil pointers.py, aby my iteráciou jednotlivých pointerov ukázalo bajtyv stacku. Zistil som, že od pointera _\%9\$p_ vidím pomocou pointerov hodnoty v stacku a samotný pointer _\%9\$p_ mi ukazuje na pointer _\%29\$p_
+Prvá zraniteľnosť bola v debug_msg() funkcii, kde nebol zadaný format specifier, čo nám umožní leaknuť pointre a rovnako stringy na pointeroch. Tu som použil pointers.py, aby mi iteráciou jednotlivých pointerov ukázalo bajtyv stacku. Zistil som, že od pointera _\%9\$p_ vidím pomocou pointerov hodnoty v stacku a samotný pointer _\%9\$p_ mi ukazuje na pointer _\%29\$p_
 
 ![002](002_pointer.png)
 
